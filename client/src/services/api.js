@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://expense-tracker-server-tawny-five.vercel.app/api";
 
 /**
  * Generate a UUID v4 for idempotency keys
