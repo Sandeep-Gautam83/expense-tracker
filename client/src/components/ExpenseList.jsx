@@ -1,4 +1,4 @@
-import { formatCurrency } from '../utils/currency';
+import { formatCurrency } from "../utils/currency";
 
 const ExpenseList = ({ expenses, isLoading }) => {
   if (isLoading) {
@@ -24,7 +24,7 @@ const ExpenseList = ({ expenses, isLoading }) => {
       <div className="px-6 py-4 bg-gray-50 border-b">
         <h2 className="text-xl font-bold text-gray-800">Your Expenses</h2>
       </div>
-      
+
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -47,7 +47,7 @@ const ExpenseList = ({ expenses, isLoading }) => {
             {expenses.map((expense) => (
               <tr key={expense._id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {new Date(expense.date).toLocaleDateString('en-IN')}
+                  {new Date(expense.date).toLocaleDateString("en-IN")}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">

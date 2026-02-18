@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import ExpenseForm from './components/ExpenseForm';
-import ExpenseList from './components/ExpenseList';
-import { getExpenses } from './services/api';
+import { useState, useEffect } from "react";
+import ExpenseForm from "./components/ExpenseForm";
+import ExpenseList from "./components/ExpenseList";
+import { getExpenses } from "./services/api";
 
 function App() {
   const [expenses, setExpenses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Fetch expenses on component mount
   useEffect(() => {
@@ -18,7 +18,7 @@ function App() {
       setIsLoading(true);
       const data = await getExpenses();
       setExpenses(data);
-      setError('');
+      setError("");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -28,7 +28,7 @@ function App() {
 
   const handleExpenseAdded = (newExpense) => {
     // Add new expense to the beginning of the list
-    setExpenses(prev => [newExpense, ...prev]);
+    setExpenses((prev) => [newExpense, ...prev]);
   };
 
   return (
@@ -63,7 +63,8 @@ function App() {
 
       {/* Footer */}
       <footer className="mt-12 text-center text-gray-500 text-sm pb-6">
-        Built with MERN Stack • Handles network retries and duplicate submissions
+        Built with MERN Stack • Handles network retries and duplicate
+        submissions
       </footer>
     </div>
   );
