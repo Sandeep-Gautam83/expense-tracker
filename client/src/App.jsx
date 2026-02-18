@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import ExpenseForm from "./components/ExpenseForm";
 import ExpenseList from "./components/ExpenseList";
 import ExpenseControls from "./components/ExpenseControls";
+import SummaryView from "./components/SummaryView";
 import { getExpenses } from "./services/api";
 import { formatCurrency } from "./utils/currency";
 
@@ -80,6 +81,9 @@ function App() {
 
         {/* Form */}
         <ExpenseForm onExpenseAdded={handleExpenseAdded} />
+
+        {/* Summary View:  Total per category */}
+        {!isLoading && <SummaryView expenses={expenses} />}
 
         {/* Controls: Filter, Sort, and Total */}
         <ExpenseControls

@@ -7,10 +7,15 @@ A production-ready personal finance tool built with MongoDB, Express, React, and
 - ✅ Create expense entries with amount, category, description, and date
 - ✅ View list of all expenses
 - ✅ Filter expenses by category
-- ✅ Sort expenses by date (newest first)
-- ✅ See total of visible expenses
+- ✅ Sort expenses by date (newest/oldest first)
+- ✅ See total of visible expenses (updates with filters)
+- ✅ Expense summary view with category breakdowns
 - ✅ Idempotent API (handles retries and duplicate submissions)
 - ✅ Precise money handling (no floating-point errors)
+- ✅ Frontend and backend validation
+- ✅ Loading states and error handling
+- ✅ Responsive design with Tailwind CSS
+- ✅ Empty states with friendly messages
 
 ## 🏗️ Architecture Decisions
 
@@ -193,34 +198,46 @@ Tests focus on:
 - CORS and error handling middleware
 - Project structure and configuration
 
-### 🔜 Commit 2: Idempotency & Money Handling (Planned)
+### ✅ Commit 2: Idempotency & Money Handling
 
-- IdempotencyKey model with TTL
-- Middleware to check duplicate keys
-- Money validation and conversion
-- Integration tests
+- IdempotencyKey model with TTL (24-hour auto-expiry)
+- Middleware to check duplicate keys and cache responses
+- Money validation: enforce integer amounts (paise), reject decimals/negatives
+- Integration test suite with Jest + Supertest
+- Verified: duplicate keys return cached response, only 1 record created
 
-### 🔜 Commit 3: React Frontend Foundation (Planned)
+### ✅ Commit 3: React Frontend Foundation
 
-- Vite + React setup
-- Tailwind CSS styling
-- Expense form with UUID generation
-- Expense list with currency formatting
+- Vite + React setup with hot module replacement
+- Tailwind CSS for styling
+- ExpenseForm component with UUID idempotency key generation
+- ExpenseList component with currency formatting
+- API service layer with proper headers
+- Loading states and disabled submit during requests
+- Display amounts using Intl.NumberFormat for ₹ formatting
 
-### 🔜 Commit 4: Filtering, Sorting & Totals (Planned)
+### ✅ Commit 4: Filtering, Sorting & Totals
 
-- Category filter dropdown
-- Date sorting controls
-- Total calculation display
-- Query parameter handling
+- Backend: query parameters for category filtering and date sorting
+- Frontend: ExpenseControls component with dropdowns
+- Category filter (All Categories + individual)
+- Sort by date (Newest First / Oldest First)
+- Total calculation of visible expenses
+- Updates dynamically based on filters/sorting
 
-### 🔜 Commit 5: Validation, Error Handling & Polish (Planned)
+### ✅ Commit 5: Validation, Error Handling & Polish
 
-- Frontend and backend validation
-- Error states and messages
-- Loading spinners
-- Summary view by category
-- Unit tests
+- **Backend Validation**: express-validator for all fields
+  - Amount: must be positive integer (paise)
+  - Category: must be in predefined list
+  - Description: 3-200 characters
+  - Date: cannot be in future
+- **Frontend Validation**: Client-side checks with field-level error messages
+- **Error Handling**: Clear error messages, try-catch blocks
+- **Loading Spinner**: Animated spinner component
+- **Summary View**: Category breakdown with percentages and progress bars
+- **Empty States**: Friendly messages when no expenses exist
+- **Comprehensive README**: Setup instructions, design decisions, trade-offs
 
 ## 🎯 What Was Intentionally NOT Implemented
 

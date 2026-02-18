@@ -13,6 +13,7 @@ const ExpenseForm = ({ onExpenseAdded }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [idempotencyKey, setIdempotencyKey] = useState(() =>
     generateIdempotencyKey(),
   );
@@ -24,11 +25,46 @@ const ExpenseForm = ({ onExpenseAdded }) => {
       [name]: value,
     }));
     setError(""); // Clear error on input change
+    // Clear field-specific error
+    setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+
+    // Validate amount
+    if (!formData.amount || formData.amount <= 0) {
+      errors.amount = "Amount must be greater than 0";
+    }
+
+    // Validate description
+    if (!formData.description || formData.description.trim().length < 3) {
+      errors.description = "Description must be at least 3 characters";
+    } else if (formData.description.length > 200) {
+      errors.description = "Description must not exceed 200 characters";
+    }
+
+    // Validate date (not in future)
+    const selectedDate = new Date(formData.date);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    if (selectedDate > today) {
+      errors.date = "Date cannot be in the future";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    // Client-side validation
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -85,12 +121,17 @@ const ExpenseForm = ({ onExpenseAdded }) => {
               value={formData.amount}
               onChange={handleChange}
               step="0.01"
-              min="0"
+              min="0.01"
               required
               disabled={isSubmitting}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                fieldErrors.amount ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="50.50"
             />
+            {fieldErrors.amount && (
+              <p className="mt-1 text-sm text-red-600">{fieldErrors.amount}</p>
+            )}
           </div>
 
           {/* Category Dropdown */}
@@ -134,10 +175,17 @@ const ExpenseForm = ({ onExpenseAdded }) => {
             value={formData.description}
             onChange={handleChange}
             required
+            minLength={3}
+            maxLength={200}
             disabled={isSubmitting}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed ${
+              fieldErrors.description ? "border-red-500" : "border-gray-300"
+            }`}
             placeholder="Lunch at restaurant"
           />
+          {fieldErrors.description && (
+            <p className="mt-1 text-sm text-red-600">{fieldErrors.description}</p>
+          )}
         </div>
 
         {/* Date Input */}
@@ -154,6 +202,17 @@ const ExpenseForm = ({ onExpenseAdded }) => {
             name="date"
             value={formData.date}
             onChange={handleChange}
+            max={new Date().toISOString().split("T")[0]}
+            required
+            disabled={isSubmitting}
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed ${
+              fieldErrors.date ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {fieldErrors.date && (
+            <p className="mt-1 text-sm text-red-600">{fieldErrors.date}</p>
+          )}
+        </div>
             required
             disabled={isSubmitting}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"

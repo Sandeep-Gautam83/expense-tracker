@@ -5,8 +5,12 @@ const {
   getExpenses,
 } = require("../controllers/expenseController");
 const { validateMoney } = require("../middleware/moneyValidation");
+const { validateExpense } = require("../middleware/validation");
 
-// Apply money validation to POST requests
-router.route("/").get(getExpenses).post(validateMoney, createExpense);
+// Apply validation and money validation to POST requests
+router
+  .route("/")
+  .get(getExpenses)
+  .post(validateExpense, validateMoney, createExpense);
 
 module.exports = router;
