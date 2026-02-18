@@ -8,10 +8,25 @@ export const generateIdempotencyKey = () => {
 };
 
 /**
- * Fetch all expenses
+ * Fetch all expenses with optional filtering and sorting
+ * @param {Object} params - Query parameters
+ * @param {string} params.category - Filter by category
+ * @param {string} params.sort - Sort order (date_desc or date_asc)
  */
-export const getExpenses = async () => {
-  const response = await fetch(`${API_BASE_URL}/expenses`);
+export const getExpenses = async (params = {}) => {
+  const queryParams = new URLSearchParams();
+
+  if (params.category) {
+    queryParams.append("category", params.category);
+  }
+
+  if (params.sort) {
+    queryParams.append("sort", params.sort);
+  }
+
+  const url = `${API_BASE_URL}/expenses${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+  const response = await fetch(url);
+
   if (!response.ok) {
     throw new Error("Failed to fetch expenses");
   }

@@ -1,22 +1,34 @@
 import { useState, useEffect } from "react";
 import ExpenseForm from "./components/ExpenseForm";
 import ExpenseList from "./components/ExpenseList";
+import ExpenseControls from "./components/ExpenseControls";
 import { getExpenses } from "./services/api";
+import { formatCurrency } from "./utils/currency";
 
 function App() {
   const [expenses, setExpenses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
+  const [sortOrder, setSortOrder] = useState("date_desc");
 
-  // Fetch expenses on component mount
+  // Fetch expenses when filter or sort changes
   useEffect(() => {
     fetchExpenses();
-  }, []);
+  }, [filterCategory, sortOrder]);
 
   const fetchExpenses = async () => {
     try {
       setIsLoading(true);
-      const data = await getExpenses();
+      const params = {
+        sort: sortOrder,
+      };
+
+      if (filterCategory) {
+        params.category = filterCategory;
+      }
+
+      const data = await getExpenses(params);
       setExpenses(data);
       setError("");
     } catch (err) {
@@ -27,9 +39,21 @@ function App() {
   };
 
   const handleExpenseAdded = (newExpense) => {
-    // Add new expense to the beginning of the list
-    setExpenses((prev) => [newExpense, ...prev]);
+    // Refetch expenses to maintain correct sorting and filtering
+    fetchExpenses();
   };
+
+  const handleFilterChange = (category) => {
+    setFilterCategory(category);
+  };
+
+  const handleSortChange = (sort) => {
+    setSortOrder(sort);
+  };
+
+  // Calculate total of visible expenses
+  const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const formattedTotal = formatCurrency(total);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -56,6 +80,15 @@ function App() {
 
         {/* Form */}
         <ExpenseForm onExpenseAdded={handleExpenseAdded} />
+
+        {/* Controls: Filter, Sort, and Total */}
+        <ExpenseControls
+          filterCategory={filterCategory}
+          onFilterChange={handleFilterChange}
+          sortOrder={sortOrder}
+          onSortChange={handleSortChange}
+          total={formattedTotal}
+        />
 
         {/* Expense List */}
         <ExpenseList expenses={expenses} isLoading={isLoading} />

@@ -23,12 +23,28 @@ const createExpense = async (req, res, next) => {
   }
 };
 
-// @desc    Get all expenses
-// @route   GET /api/expenses
+// @desc    Get all expenses with optional filtering and sorting
+// @route   GET /api/expenses?category=Food&sort=date_desc
 // @access  Public
 const getExpenses = async (req, res, next) => {
   try {
-    const expenses = await Expense.find().sort({ date: -1 });
+    const { category, sort } = req.query;
+
+    // Build query filter
+    const filter = {};
+    if (category) {
+      filter.category = category;
+    }
+
+    // Build sort order
+    let sortOrder = { date: -1 }; // Default: newest first
+    if (sort === "date_asc") {
+      sortOrder = { date: 1 }; // Oldest first
+    } else if (sort === "date_desc") {
+      sortOrder = { date: -1 }; // Newest first
+    }
+
+    const expenses = await Expense.find(filter).sort(sortOrder);
 
     res.status(200).json({
       success: true,
