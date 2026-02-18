@@ -184,7 +184,9 @@ const ExpenseForm = ({ onExpenseAdded }) => {
             placeholder="Lunch at restaurant"
           />
           {fieldErrors.description && (
-            <p className="mt-1 text-sm text-red-600">{fieldErrors.description}</p>
+            <p className="mt-1 text-sm text-red-600">
+              {fieldErrors.description}
+            </p>
           )}
         </div>
 
@@ -212,11 +214,6 @@ const ExpenseForm = ({ onExpenseAdded }) => {
           {fieldErrors.date && (
             <p className="mt-1 text-sm text-red-600">{fieldErrors.date}</p>
           )}
-        </div>
-            required
-            disabled={isSubmitting}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-          />
         </div>
 
         {/* Error Message */}
