@@ -1,7 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { createExpense, getExpenses } = require('../controllers/expenseController');
+const {
+  createExpense,
+  getExpenses,
+} = require("../controllers/expenseController");
+const { validateMoney } = require("../middleware/moneyValidation");
 
-router.route('/').get(getExpenses).post(createExpense);
+// Apply money validation to POST requests
+router.route("/").get(getExpenses).post(validateMoney, createExpense);
 
 module.exports = router;

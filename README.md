@@ -15,18 +15,21 @@ A production-ready personal finance tool built with MongoDB, Express, React, and
 ## 🏗️ Architecture Decisions
 
 ### Idempotency Handling
+
 - **Problem**: Users may click submit multiple times, browsers retry failed requests, or pages get refreshed during submission
 - **Solution**: Implemented idempotency keys using UUID headers. Each request includes a unique key that's checked before processing
 - **Trade-off**: Requires extra database storage for keys, but prevents duplicate expense entries in all scenarios
 
 ### Money Storage
+
 - **Decision**: Store amounts as integers (paise/cents) instead of decimals
 - **Rationale**: JavaScript floating-point arithmetic is unreliable (0.1 + 0.2 ≠ 0.3). Storing ₹50.50 as 5050 paise ensures accuracy
 - **Implementation**: Frontend multiplies by 100 before sending, backend stores integers, display converts back using Intl.NumberFormat
 
 ### Database Choice
+
 - **Choice**: MongoDB with Mongoose ODM
-- **Rationale**: 
+- **Rationale**:
   - Full MERN stack consistency
   - Flexible schema for future extensions
   - TTL indexes for auto-expiring idempotency keys
@@ -34,12 +37,14 @@ A production-ready personal finance tool built with MongoDB, Express, React, and
 - **Trade-off**: Requires MongoDB installation/Atlas setup vs SQLite's simplicity
 
 ### Project Structure
+
 - **Monorepo**: Both backend and frontend in same repository for easier atomic commits
 - **Separate folders**: `/server` and `/client` can be deployed independently if needed
 
 ## 🚀 Setup Instructions
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - MongoDB (local installation OR MongoDB Atlas account)
 - npm or yarn
@@ -47,11 +52,13 @@ A production-ready personal finance tool built with MongoDB, Express, React, and
 ### Installing MongoDB
 
 **Option 1: Local MongoDB**
+
 - Windows: Download from [mongodb.com](https://www.mongodb.com/try/download/community)
 - Mac: `brew install mongodb-community`
 - Linux: `sudo apt-get install mongodb`
 
 **Option 2: MongoDB Atlas (Cloud)**
+
 1. Create free account at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
 2. Create a cluster
 3. Get connection string
@@ -106,15 +113,18 @@ npm run dev
 ## 📡 API Endpoints
 
 ### POST /api/expenses
+
 Create a new expense entry.
 
 **Headers:**
+
 ```
 Content-Type: application/json
 Idempotency-Key: <uuid> (added in Commit 2)
 ```
 
 **Request Body:**
+
 ```json
 {
   "amount": 5050,
@@ -125,6 +135,7 @@ Idempotency-Key: <uuid> (added in Commit 2)
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -141,13 +152,16 @@ Idempotency-Key: <uuid> (added in Commit 2)
 ```
 
 ### GET /api/expenses
+
 Retrieve all expenses.
 
 **Query Parameters (added in Commit 4):**
+
 - `category` - Filter by category
 - `sort=date_desc` - Sort by date (newest first)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -164,6 +178,7 @@ npm test
 ```
 
 Tests focus on:
+
 - Idempotency (duplicate keys don't create duplicates)
 - Money handling (amounts stored as integers)
 - API endpoints (CRUD operations)
@@ -171,6 +186,7 @@ Tests focus on:
 ## 📝 Development Progress
 
 ### ✅ Commit 1: Backend Foundation & Database Setup
+
 - Express server with MongoDB connection
 - Expense model with proper schema
 - Basic CRUD endpoints
@@ -178,24 +194,28 @@ Tests focus on:
 - Project structure and configuration
 
 ### 🔜 Commit 2: Idempotency & Money Handling (Planned)
+
 - IdempotencyKey model with TTL
 - Middleware to check duplicate keys
 - Money validation and conversion
 - Integration tests
 
 ### 🔜 Commit 3: React Frontend Foundation (Planned)
+
 - Vite + React setup
 - Tailwind CSS styling
 - Expense form with UUID generation
 - Expense list with currency formatting
 
 ### 🔜 Commit 4: Filtering, Sorting & Totals (Planned)
+
 - Category filter dropdown
 - Date sorting controls
 - Total calculation display
 - Query parameter handling
 
 ### 🔜 Commit 5: Validation, Error Handling & Polish (Planned)
+
 - Frontend and backend validation
 - Error states and messages
 - Loading spinners

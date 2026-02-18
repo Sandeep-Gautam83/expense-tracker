@@ -1,4 +1,4 @@
-const Expense = require('../models/Expense');
+const Expense = require("../models/Expense");
 
 // @desc    Create new expense
 // @route   POST /api/expenses
@@ -11,12 +11,12 @@ const createExpense = async (req, res, next) => {
       amount,
       category,
       description,
-      date
+      date,
     });
 
     res.status(201).json({
       success: true,
-      data: expense
+      data: expense,
     });
   } catch (error) {
     next(error);
@@ -33,7 +33,7 @@ const getExpenses = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: expenses.length,
-      data: expenses
+      data: expenses,
     });
   } catch (error) {
     next(error);
@@ -42,5 +42,5 @@ const getExpenses = async (req, res, next) => {
 
 module.exports = {
   createExpense,
-  getExpenses
+  getExpenses,
 };
